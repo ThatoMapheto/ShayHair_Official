@@ -1100,3 +1100,83 @@ footer {
     color: var(--primary);
     margin-bottom: 15px;
 }
+
+/* ===== VIDEO POP-OUT EFFECTS ===== */
+.product-img,
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-radius: 10px;
+    border: 3px solid transparent;
+}
+
+.product-img:hover,
+.gallery-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+    border-color: var(--primary);
+}
+
+/* Enhanced play icon */
+.play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    color: white;
+    font-size: 60px;
+    opacity: 0;
+    background: rgba(212, 175, 55, 0.9);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.product-img:hover .play-icon,
+.gallery-item:hover .play-icon {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Active playing state */
+.product-img.playing,
+.gallery-item.playing {
+    transform: scale(1.03);
+    box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3);
+    border-color: var(--primary);
+}
+
+.product-img.playing .play-icon,
+.gallery-item.playing .play-icon {
+    opacity: 1;
+    background: rgba(212, 175, 55, 0.8);
+    transform: translate(-50%, -50%) scale(0.9);
+}
+
+/* Enhanced modal */
+.video-modal-content {
+    width: 90%;
+    max-width: 800px;
+    position: relative;
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+}
+
+.video-modal.active .video-modal-content {
+    transform: scale(1);
+}
+
+.video-modal-content video {
+    width: 100%;
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
