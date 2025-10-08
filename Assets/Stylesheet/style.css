@@ -275,7 +275,7 @@ nav {
 }
 
 .product-img {
-    height: 300px;
+    height: 450px;
     overflow: hidden;
     position: relative;
 }
@@ -433,7 +433,7 @@ nav {
     position: relative;
     overflow: hidden;
     border-radius: 10px;
-    height: 300px;
+    height: 450px;
     cursor: pointer;
 }
 
@@ -456,7 +456,7 @@ nav {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(212, 175, 55, 0.7);
+    background: rgba(199, 185, 140, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
