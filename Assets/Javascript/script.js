@@ -160,6 +160,30 @@ const orderForm = document.getElementById('orderForm');
 
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
+// Initialize length selectors
+function initializeLengthSelectors() {
+    document.querySelectorAll('.length-select').forEach(select => {
+        // Set initial price display
+        const productId = select.dataset.product;
+        const selectedOption = select.options[select.selectedIndex];
+        const priceElement = document.getElementById(`price-${productId}`);
+        if (priceElement) {
+            priceElement.textContent = `R${parseInt(selectedOption.dataset.price).toLocaleString()}`;
+        }
+
+        // Add change event listener
+        select.addEventListener('change', function () {
+            const productId = this.dataset.product;
+            const selectedOption = this.options[this.selectedIndex];
+            const priceElement = document.getElementById(`price-${productId}`);
+
+            if (priceElement) {
+                priceElement.textContent = `R${parseInt(selectedOption.dataset.price).toLocaleString()}`;
+            }
+        });
+    });
+}
+
 function updateCart() {
     cartCount.textContent = cart.reduce((total, item) => total + item.quantity, 0);
     localStorage.setItem('cart', JSON.stringify(cart));
@@ -180,23 +204,24 @@ function updateCart() {
             const cartItem = document.createElement('div');
             cartItem.className = 'cart-item';
             cartItem.innerHTML = `
-                <div class="cart-item-img">
-                    ${item.isVideo ?
+                        <div class="cart-item-img">
+                            ${item.isVideo ?
                     `<video muted loop><source src="${item.image}" type="video/mp4"></video>` :
                     `<img src="${item.image}" alt="${item.name}">`
                 }
-                </div>
-                <div class="cart-item-details">
-                    <div class="cart-item-name">${item.name}</div>
-                    <div class="cart-item-price">R${item.price.toFixed(2)}</div>
-                    <div class="cart-item-quantity">
-                        <div class="quantity-btn" data-index="${index}" data-action="decrease">-</div>
-                        <input type="number" class="quantity-input" value="${item.quantity}" min="1" readonly>
-                        <div class="quantity-btn" data-index="${index}" data-action="increase">+</div>
-                    </div>
-                    <div class="cart-item-remove" data-index="${index}">Remove</div>
-                </div>
-            `;
+                        </div>
+                        <div class="cart-item-details">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-length">Length: ${item.length}"</div>
+                            <div class="cart-item-price">R${item.price.toFixed(2)}</div>
+                            <div class="cart-item-quantity">
+                                <div class="quantity-btn" data-index="${index}" data-action="decrease">-</div>
+                                <input type="number" class="quantity-input" value="${item.quantity}" min="1" readonly>
+                                <div class="quantity-btn" data-index="${index}" data-action="increase">+</div>
+                            </div>
+                            <div class="cart-item-remove" data-index="${index}">Remove</div>
+                        </div>
+                    `;
             cartItems.appendChild(cartItem);
         });
 
@@ -232,18 +257,29 @@ document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
     btn.addEventListener('click', function () {
         const id = this.dataset.id;
         const name = this.dataset.name;
-        const price = parseFloat(this.dataset.price);
         const image = this.dataset.image;
         const isVideo = image.endsWith('.mp4');
 
-        const existingItem = cart.find(item => item.id === id);
-        if (existingItem) {
-            existingItem.quantity++;
+        // Get the selected length and price
+        const productCard = this.closest('.product-card');
+        const lengthSelect = productCard.querySelector('.length-select');
+        const selectedOption = lengthSelect.options[lengthSelect.selectedIndex];
+        const length = selectedOption.value;
+        const price = parseFloat(selectedOption.dataset.price);
+
+        // Check if this exact product (same ID and length) is already in cart
+        const existingItemIndex = cart.findIndex(item => item.id === id && item.length === length);
+
+        if (existingItemIndex !== -1) {
+            // If it exists, increase quantity
+            cart[existingItemIndex].quantity++;
         } else {
+            // Otherwise, add new item
             cart.push({
                 id,
                 name,
                 price,
+                length,
                 image,
                 isVideo,
                 quantity: 1
@@ -317,4 +353,5 @@ if (document.querySelector('.newsletter-form')) {
 document.addEventListener('DOMContentLoaded', function () {
     updateCart();
     setupVideoPlayback();
+    initializeLengthSelectors();
 });
